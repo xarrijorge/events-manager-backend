@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
-/* GET home page. */
+/* GET all events. */
 router.get('/', function (req, res, next) {
   res.send('Welcome, Young Folks');
 });
