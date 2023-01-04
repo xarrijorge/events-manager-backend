@@ -80,4 +80,28 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/', async (req, res) => {
+  try {
+    await client.connect();
+
+    const db = client.db('eventsmanager');
+    const eventsCollection = db.collection('events');
+
+    const body = req.body;
+
+    const event = {
+      title: body.title,
+      organizer: body.organizer,
+      date: body.date,
+    };
+
+    const item = await eventsCollection.insertOne(event);
+    res.send(event);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+  }
+});
+
 module.exports = router;
