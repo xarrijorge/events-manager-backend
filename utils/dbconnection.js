@@ -1,6 +1,6 @@
 const DB_URI = process.env.MONGODB_URI;
-const MongoCluster = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
 
-const MongoClient = new MongoCluster(DB_URI);
+let client = new MongoClient(DB_URI);
 
-module.exports = MongoClient;
+module.exports = client;
