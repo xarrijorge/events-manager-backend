@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
     await client.connect();
     // connect to the right db from the cluster
     const db = client.db('eventsmanager');
-    const dbList = client.db().admin().listDatabases();
 
     // connect to the right collection
     const eventsCollection = db.collection('events');
