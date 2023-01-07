@@ -16,11 +16,9 @@ router.get('/', async (req, res) => {
   try {
     // connecting to the mongo cluster online
     await client.connect();
-    // connect to the right db from the cluster
-    const db = client.db('eventsmanager');
 
     // connect to the right collection
-    const eventsCollection = db.collection('events');
+    const eventsCollection = client.db('eventsmanager').collection('events');
 
     // query the collection based on parameters set above
     const allEvents = await eventsCollection.find({}).toArray();
@@ -37,10 +35,8 @@ router.get('/:id', async (req, res) => {
   try {
     // connecting to the mongo cluster online
     await client.connect();
-    // connect to the right db from the cluster
-    const db = client.db('eventsmanager');
     // connect to the right collection
-    const eventsCollection = db.collection('events');
+    const eventsCollection = client.db('eventsmanager').collection('events');
     const id = ObjectID(`${req.params.id}`);
 
     const query = { _id: id };
@@ -61,17 +57,31 @@ router.delete('/:id', async (req, res) => {
   try {
     // connecting to the mongo cluster online
     await client.connect();
-    // connect to the right db from the cluster
-    const db = client.db('eventsmanager');
     // connect to the right collection
-    const eventsCollection = db.collection('events');
+    const eventsCollection = client.db('eventsmanager').collection('events');
     const id = ObjectID(`${req.params.id}`);
 
-    const query = { _id: id };
     // query the collection based on parameters set above
-    const item = await eventsCollection.findOneAndDelete(query);
+    const item = await eventsCollection.findOneAndDelete({ _id: id });
 
     res.send(item);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
+  }
+});
+
+router.patch('/:id', async (req, res) => {
+  try {
+    await client.connect();
+    const eventsCollection = client.db('eventsmamager').collection('events');
+    const id = ObjectID(`${req.params.id}`);
+
+    const item = await eventsCollection.findOneAndReplace(
+      { _id: id },
+      req.body
+    );
   } catch (err) {
     console.log(err);
   } finally {
@@ -83,19 +93,17 @@ router.post('/', async (req, res) => {
   try {
     await client.connect();
 
-    const db = client.db('eventsmanager');
-    const eventsCollection = db.collection('events');
+    const eventsCollection = client.db('eventsmanager').collection('events');
 
     const body = req.body;
 
-    const event = {
+    const item = await eventsCollection.insertOne({
       title: body.title,
       organizer: body.organizer,
       date: body.date,
-    };
+    });
 
-    const item = await eventsCollection.insertOne(event);
-    res.send(event);
+    res.send(item);
   } catch (err) {
     console.log(err);
   } finally {

@@ -17,6 +17,7 @@
     "express": "~4.16.1",
     "express-openid-connect": "^2.11.0",
     "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^4.13.0",
     "morgan": "~1.9.1",
     "multer": "^1.4.5-lts.1",
