@@ -36,7 +36,32 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+// function authenticate(req, res, next) {
+//   const authHeader = req.headers['authorization'];
+//   const token = authHeader.split(' ')[1];
+//   if(!token)
+// }
+
 // Login Controller
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    await client.connect();
+    const userSCollection = client.db('eventsmanager').collection('users');
+    const user = await userSCollection.findOne({ username });
+
+    const passwordCorrect =
+      user !== null ? await bcrypt.compare(password, user.passwordHash) : null;
+
+    if (!(user && passwordCorrect)) {
+      return res.status(401).json({ error: 'invalid username or password' });
+    }
+    const accessToken = jwt.sign(user, process.env.SECRET);
+    res.send(accessToken);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 // Logout Controller
 
